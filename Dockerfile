@@ -1,4 +1,4 @@
-FROM python:3.15.0b4-alpine
+FROM python:3.15.0rc1-alpine
 WORKDIR /usr/src/myapp
 # Optionally pin the installed version so `build-all` can rebuild historical versions.
 # An empty value (the normal build) installs the latest release.
