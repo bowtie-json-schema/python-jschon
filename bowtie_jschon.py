@@ -79,7 +79,7 @@ class Runner:
         self._metaschema_uri = jschon.URI(dialect)
         return dict(ok=self._metaschema_uri in VOCABULARIES)
 
-    def cmd_run(self, case, seq):
+    def cmd_run(self, case, seq, output):
         assert self._started, "Not started!"
         try:
             catalog = jschon.create_catalog(
@@ -104,7 +104,25 @@ class Runner:
 
             for test in case["tests"]:
                 result = schema.evaluate(jschon.JSON(test["instance"]))
-                results.append({"valid": result.valid})
+
+                if output == "annotations":
+                    basic_output = result.output("basic")
+                    annotations = []
+                    for entry in basic_output.get("annotations", []):
+                        keyword_location = entry["keywordLocation"]
+                        keyword = keyword_location.rsplit("/", 1)[-1]
+                        annotations.append({
+                            "keyword": keyword,
+                            "instanceLocation": entry["instanceLocation"],
+                            "keywordLocation": "#" + keyword_location,
+                            "annotation": entry["annotation"],
+                        })
+                    results.append({
+                        "valid": result.valid,
+                        "annotations": annotations,
+                    })
+                else:
+                    results.append({"valid": result.valid})
 
             return dict(seq=seq, results=results)
         except Exception:
