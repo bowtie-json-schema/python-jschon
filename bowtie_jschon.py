@@ -79,7 +79,7 @@ class Runner:
         self._metaschema_uri = jschon.URI(dialect)
         return dict(ok=self._metaschema_uri in VOCABULARIES)
 
-    def cmd_run(self, case, seq, output):
+    def cmd_run(self, case, seq, output="flag"):
         assert self._started, "Not started!"
         try:
             catalog = jschon.create_catalog(
